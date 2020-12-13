@@ -17,7 +17,10 @@
         "commands",
         "arguments"
     ],
-    "dependencies": {},
+    "exports": {
+        "import": "./src/index.mjs",
+        "require": "./src/index.js"
+    },
     "devDependencies": {
         "@types/node": "^10.14.4",
         "discord.js-docgen": "github:discordjs/docgen",
