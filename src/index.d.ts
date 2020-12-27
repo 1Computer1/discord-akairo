@@ -4,7 +4,7 @@ declare module 'discord-akairo' {
         Message, MessageAttachment, MessageEmbed,
         MessageAdditions, MessageEditOptions, MessageOptions, SplitOptions,
         User, UserResolvable, GuildMember,
-        Channel, Role, Emoji, Guild,
+        Channel, TextChannel, NewsChannel, Role, Emoji, Guild,
         PermissionResolvable, StringResolvable, Snowflake
     } from 'discord.js';
 
@@ -18,6 +18,15 @@ declare module 'discord-akairo' {
     }
 
     export class AkairoError extends Error {
+        public constructor(key: 'ALIAS_CONFLICT', alias: string, id: string, conflict: string);
+        public constructor(key: 'ALREADY_LOADED' | 'MODULE_NOT_FOUND' | 'NOT_RELOADABLE', constructor: string, id: string);
+        public constructor(key: 'COMMAND_UTIL_EXPLICIT');
+        public constructor(key: 'FILE_NOT_FOUND', filename: string);
+        public constructor(key: 'INVALID_CLASS_TO_HANDLE', given: string, expected: string);
+        public constructor(key: 'INVALID_TYPE', name: string, expected: string, vowel?: boolean);
+        public constructor(key: 'NOT_INSTANTIABLE', constructor: string);
+        public constructor(key: 'NOT_IMPLEMENTED', constructor: string, method: string);
+        public constructor(key: 'UNKNOWN_MATCH_TYPE', match: string);
         public code: string;
     }
 
@@ -69,6 +78,7 @@ declare module 'discord-akairo' {
 
         public reload(): this;
         public remove(): this;
+        public toString(): string;
     }
 
     export class Argument {
@@ -177,6 +187,7 @@ declare module 'discord-akairo' {
 
         public before(message: Message): any;
         public condition(message: Message): boolean;
+        public exec(message: { channel: TextChannel | NewsChannel } & Message, args: any): any;
         public exec(message: Message, args: any): any;
         public parse(message: Message, content: string): Promise<Flag | any>;
         public reload(): this;
