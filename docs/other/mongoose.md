@@ -103,7 +103,7 @@ const guildSchema = new Schema({
     },
     settings: {
         type: Object,
-        require: true
+        required: true
     }
 }, { minimize: false });
 

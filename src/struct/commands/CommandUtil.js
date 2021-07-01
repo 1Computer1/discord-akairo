@@ -1,4 +1,4 @@
-const { APIMessage, Collection } = require('discord.js');
+const { Collection } = require('discord.js');
 
 /**
  * Command utilities.
@@ -94,15 +94,12 @@ class CommandUtil {
 
     /**
      * Sends a response or edits an old response if available.
-     * @param {StringResolvable} [content=''] - Content to send.
-     * @param {MessageOptions|MessageAdditions} [options={}] - Options to use.
+     * @param {string|MessageOptions} [options={}] - Options to use.
      * @returns {Promise<Message|Message[]>}
      */
-    async send(content, options) {
-        const transformedOptions = this.constructor.transformOptions(content, options);
-        const hasFiles = (transformedOptions.files && transformedOptions.files.length > 0)
-            || (transformedOptions.embed && transformedOptions.embed.files && transformedOptions.embed.files.length > 0);
-
+    async send(options) {
+        const transformedOptions = this.constructor.transformOptions(options);
+        const hasFiles = transformedOptions.files && transformedOptions.files.length > 0;
         if (this.shouldEdit && (this.command ? this.command.editable : true) && !hasFiles && !this.lastResponse.deleted && !this.lastResponse.attachments.size) {
             return this.lastResponse.edit(transformedOptions);
         }
@@ -115,48 +112,46 @@ class CommandUtil {
 
     /**
      * Sends a response, overwriting the last response.
-     * @param {StringResolvable} [content=''] - Content to send.
-     * @param {MessageOptions|MessageAdditions} [options={}] - Options to use.
+     * @param {string|MessageOptions} [options={}] - Options to use.
      * @returns {Promise<Message|Message[]>}
      */
-    async sendNew(content, options) {
-        const sent = await this.message.channel.send(this.constructor.transformOptions(content, options));
+    async sendNew(options) {
+        const sent = await this.message.channel.send(this.constructor.transformOptions(options));
         const lastSent = this.setLastResponse(sent);
         this.setEditable(!lastSent.attachments.size);
         return sent;
     }
 
     /**
-     * Sends a response with a mention concantenated to it.
-     * @param {StringResolvable} [content=''] - Content to send.
-     * @param {MessageOptions|MessageAdditions} [options={}] - Options to use.
+     * Sends a response replying to the user's message.
+     * @param {string|MessageOptions} [options={}] - Options to use.
      * @returns {Promise<Message|Message[]>}
      */
-    reply(content, options) {
-        return this.send(this.constructor.transformOptions(content, options, { reply: this.message.member || this.message.author }));
+    reply(options) {
+        return this.send({
+            reply: { messageReference: this.message, failIfNotExists: false },
+            ...this.constructor.transformOptions(options)
+        });
     }
 
     /**
      * Edits the last response.
-     * @param {StringResolvable} [content=''] - Content to send.
-     * @param {MessageEditOptions|MessageEmbed} [options={}] - Options to use.
+     * @param {string|MessageEditOptions} [options={}] - Options to use.
      * @returns {Promise<Message>}
      */
-    edit(content, options) {
-        return this.lastResponse.edit(content, options);
+    edit(options) {
+        return this.lastResponse.edit(options);
     }
 
     /**
      * Transform options for sending.
-     * @param {StringResolvable} [content=''] - Content to send.
-     * @param {MessageOptions|MessageAdditions} [options={}] - Options to use.
-     * @param {MessageOptions} [extra={}] - Extra options to add.
+     * @param {string|MessageOptions} [options={}] - Options to use.
      * @returns {MessageOptions}
      */
-    static transformOptions(content, options, extra) {
-        const transformedOptions = APIMessage.transformOptions(content, options, extra);
+    static transformOptions(options) {
+        const transformedOptions = typeof options === 'string' ? { content: options } : { ...options };
         if (!transformedOptions.content) transformedOptions.content = null;
-        if (!transformedOptions.embed) transformedOptions.embed = null;
+        if (!transformedOptions.embeds) transformedOptions.embeds = [];
         return transformedOptions;
     }
 }

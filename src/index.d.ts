@@ -5,7 +5,7 @@ declare module 'discord-akairo' {
         MessageAdditions, MessageEditOptions, MessageOptions, SplitOptions,
         User, UserResolvable, GuildMember,
         Channel, Role, Emoji, Guild,
-        PermissionResolvable, StringResolvable, Snowflake
+        PermissionResolvable, Snowflake
     } from 'discord.js';
 
     import { EventEmitter } from 'events';
@@ -22,7 +22,8 @@ declare module 'discord-akairo' {
     }
 
     export class AkairoClient extends Client {
-        public constructor(options?: AkairoOptions & ClientOptions, clientOptions?: ClientOptions);
+        public constructor(options?: AkairoOptions & ClientOptions);
+        public constructor(options: AkairoOptions, clientOptions: ClientOptions);
 
         public ownerID: Snowflake | Snowflake[];
         public util: ClientUtil;
@@ -84,7 +85,7 @@ declare module 'discord-akairo' {
         public match: ArgumentMatch;
         public multipleFlags: boolean;
         public flag?: string | string[];
-        public otherwise?: StringResolvable | MessageOptions | MessageAdditions | OtherwiseContentSupplier;
+        public otherwise?: string | MessageOptions | MessageAdditions | OtherwiseContentSupplier;
         public prompt?: ArgumentPromptOptions | boolean;
         public type: ArgumentType | ArgumentTypeCaster;
         public unordered: boolean | number | number[];
@@ -272,30 +273,14 @@ declare module 'discord-akairo' {
         public shouldEdit: boolean;
 
         public addMessage(message: Message | Message[]): Message | Message[];
-        public edit(content?: StringResolvable, options?: MessageEmbed | MessageEditOptions): Promise<Message>;
-        public edit(options?: MessageOptions | MessageAdditions): Promise<Message>;
-        public reply(content?: StringResolvable, options?: MessageOptions | MessageAdditions): Promise<Message>;
-        public reply(content?: StringResolvable, options?: MessageOptions & { split?: false } | MessageAdditions): Promise<Message>;
-        public reply(content?: StringResolvable, options?: MessageOptions & { split: true | SplitOptions } | MessageAdditions): Promise<Message[]>;
-        public reply(options?: MessageOptions | MessageAdditions): Promise<Message>;
-        public reply(options?: MessageOptions & { split?: false } | MessageAdditions): Promise<Message>;
-        public reply(options?: MessageOptions & { split: true | SplitOptions } | MessageAdditions): Promise<Message[]>;
-        public send(content?: StringResolvable, options?: MessageOptions | MessageAdditions): Promise<Message>;
-        public send(content?: StringResolvable, options?: MessageOptions & { split?: false } | MessageAdditions): Promise<Message>;
-        public send(content?: StringResolvable, options?: MessageOptions & { split: true | SplitOptions } | MessageAdditions): Promise<Message[]>;
-        public send(options?: MessageOptions | MessageAdditions): Promise<Message>;
-        public send(options?: MessageOptions & { split?: false } | MessageAdditions): Promise<Message>;
-        public send(options?: MessageOptions & { split: true | SplitOptions } | MessageAdditions): Promise<Message[]>;
-        public sendNew(content?: StringResolvable, options?: MessageOptions | MessageAdditions): Promise<Message>;
-        public sendNew(content?: StringResolvable, options?: MessageOptions & { split?: false } | MessageAdditions): Promise<Message>;
-        public sendNew(content?: StringResolvable, options?: MessageOptions & { split: true | SplitOptions } | MessageAdditions): Promise<Message[]>;
-        public sendNew(options?: MessageOptions | MessageAdditions): Promise<Message>;
-        public sendNew(options?: MessageOptions & { split?: false } | MessageAdditions): Promise<Message>;
-        public sendNew(options?: MessageOptions & { split: true | SplitOptions } | MessageAdditions): Promise<Message[]>;
+        public edit(options?: string | MessageEditOptions): Promise<Message>;
+        public reply(options?: string | MessageOptions): Promise<Message>;
+        public send(options?: string | MessageOptions): Promise<Message>;
+        public sendNew(options?: string | MessageOptions): Promise<Message>;
         public setEditable(state: boolean): this;
         public setLastResponse(message: Message | Message[]): Message;
 
-        public static transformOptions(content?: StringResolvable, options?: MessageOptions | MessageAdditions): any[];
+        public static transformOptions(options?: string | MessageOptions): MessageOptions;
     }
 
     export class Flag {
@@ -489,13 +474,13 @@ declare module 'discord-akairo' {
 
     export interface DefaultArgumentOptions {
         prompt?: ArgumentPromptOptions;
-        otherwise?: StringResolvable | MessageOptions | MessageAdditions | OtherwiseContentSupplier;
+        otherwise?: string | MessageOptions | MessageAdditions | OtherwiseContentSupplier;
         modifyOtherwise?: OtherwiseContentModifier;
     }
 
     export interface ArgumentOptions {
         default?: DefaultValueSupplier | any;
-        description?: StringResolvable;
+        description?: string;
         id?: string;
         index?: number;
         limit?: number;
@@ -503,7 +488,7 @@ declare module 'discord-akairo' {
         modifyOtherwise?: OtherwiseContentModifier;
         multipleFlags?: boolean;
         flag?: string | string[];
-        otherwise?: StringResolvable | MessageOptions | MessageAdditions | OtherwiseContentSupplier;
+        otherwise?: string | MessageOptions | MessageAdditions | OtherwiseContentSupplier;
         prompt?: ArgumentPromptOptions | boolean;
         type?: ArgumentType | ArgumentTypeCaster;
         unordered?: boolean | number | number[];
@@ -519,9 +504,9 @@ declare module 'discord-akairo' {
 
     export interface ArgumentPromptOptions {
         breakout?: boolean;
-        cancel?: StringResolvable | MessageOptions | MessageAdditions | PromptContentSupplier;
+        cancel?: string | MessageOptions | MessageAdditions | PromptContentSupplier;
         cancelWord?: string;
-        ended?: StringResolvable | MessageOptions | MessageAdditions | PromptContentSupplier;
+        ended?: string | MessageOptions | MessageAdditions | PromptContentSupplier;
         infinite?: boolean;
         limit?: number;
         modifyCancel?: PromptContentModifier;
@@ -531,11 +516,11 @@ declare module 'discord-akairo' {
         modifyTimeout?: PromptContentModifier;
         optional?: boolean;
         retries?: number;
-        retry?: StringResolvable | MessageOptions | MessageAdditions | PromptContentSupplier;
-        start?: StringResolvable | MessageOptions | MessageAdditions | PromptContentSupplier;
+        retry?: string | MessageOptions | MessageAdditions | PromptContentSupplier;
+        start?: string | MessageOptions | MessageAdditions | PromptContentSupplier;
         stopWord?: string;
         time?: number;
-        timeout?: StringResolvable | MessageOptions | MessageAdditions | PromptContentSupplier;
+        timeout?: string | MessageOptions | MessageAdditions | PromptContentSupplier;
     }
 
     export interface ArgumentRunnerState {
@@ -553,7 +538,7 @@ declare module 'discord-akairo' {
         clientPermissions?: PermissionResolvable | PermissionResolvable[] | MissingPermissionSupplier;
         condition?: ExecutionPredicate;
         cooldown?: number;
-        description?: StringResolvable;
+        description?: string;
         editable?: boolean;
         flags?: string[];
         ignoreCooldown?: Snowflake | Snowflake[] | IgnoreCheckPredicate;
@@ -682,20 +667,20 @@ declare module 'discord-akairo' {
     export type MissingPermissionSupplier = (message: Message) => Promise<any> | any;
 
     export type OtherwiseContentModifier = (message: Message, text: string, data: FailureData)
-        => StringResolvable | MessageOptions | MessageAdditions | Promise<StringResolvable | MessageOptions | MessageAdditions>;
+        => string | MessageOptions | MessageAdditions | Promise<string | MessageOptions | MessageAdditions>;
 
     export type OtherwiseContentSupplier = (message: Message, data: FailureData)
-        => StringResolvable | MessageOptions | MessageAdditions | Promise<StringResolvable | MessageOptions | MessageAdditions>;
+        => string | MessageOptions | MessageAdditions | Promise<string | MessageOptions | MessageAdditions>;
 
     export type ParsedValuePredicate = (message: Message, phrase: string, value: any) => boolean;
 
     export type PrefixSupplier = (message: Message) => string | string[] | Promise<string | string[]>;
 
     export type PromptContentModifier = (message: Message, text: string, data: ArgumentPromptData)
-        => StringResolvable | MessageOptions | MessageAdditions | Promise<StringResolvable | MessageOptions | MessageAdditions>;
+        => string | MessageOptions | MessageAdditions | Promise<string | MessageOptions | MessageAdditions>;
 
     export type PromptContentSupplier = (message: Message, data: ArgumentPromptData)
-        => StringResolvable | MessageOptions | MessageAdditions | Promise<StringResolvable | MessageOptions | MessageAdditions>;
+        => string | MessageOptions | MessageAdditions | Promise<string | MessageOptions | MessageAdditions>;
 
     export type RegexSupplier = (message: Message) => RegExp;
 

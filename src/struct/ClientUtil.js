@@ -360,7 +360,7 @@ class ClientUtil {
     }
 
     /**
-     * Combination of `<Client>.fetchUser()` and `<Guild>.fetchMember()`.
+     * Combination of `<Client>.users.fetch()` and `<Guild>.members.fetch()`.
      * @param {Guild} guild - Guild to fetch in.
      * @param {string} id - ID of the user.
      * @param {boolean} cache - Whether or not to add to cache.

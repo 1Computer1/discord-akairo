@@ -1036,7 +1036,7 @@ module.exports = CommandHandler;
  */
 
 /**
- * Emitted when a message does not start with the prefix or match a command.
+ * Emitted when no command has been run.
  * @event CommandHandler#messageInvalid
  * @param {Message} message - Message sent.
  */

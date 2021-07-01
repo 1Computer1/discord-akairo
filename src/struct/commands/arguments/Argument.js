@@ -83,7 +83,7 @@ class Argument {
 
         /**
          * The content or function supplying the content sent when argument parsing fails.
-         * @type {?StringResolvable|MessageOptions|MessageAdditions|OtherwiseContentSupplier}
+         * @type {?string|MessageOptions|MessageAdditions|OtherwiseContentSupplier}
          */
         this.otherwise = typeof otherwise === 'function' ? otherwise.bind(this) : otherwise;
 
@@ -270,7 +270,8 @@ class Argument {
 
             let input;
             try {
-                input = (await message.channel.awaitMessages(m => m.author.id === message.author.id, {
+                input = (await message.channel.awaitMessages({
+                    filter: m => m.author.id === message.author.id,
                     max: 1,
                     time: promptOptions.time,
                     errors: ['time']
@@ -541,7 +542,7 @@ class Argument {
      * @returns {ArgumentTypeCaster}
      */
     static tagged(type, tag = type) {
-        return async function typeFn(message, phrase) {
+        async function typeFn(message, phrase) {
             if (typeof type === 'function') type = type.bind(this);
             const res = await Argument.cast(type, this.handler.resolver, message, phrase);
             if (Argument.isFailure(res)) {
@@ -549,7 +550,9 @@ class Argument {
             }
 
             return { tag, value: res };
-        };
+        }
+
+        return typeof this === 'undefined' ? typeFn : typeFn.bind(this);
     }
 
     /**
@@ -582,7 +585,7 @@ class Argument {
     static taggedUnion(...types) {
         return async function typeFn(message, phrase) {
             for (let entry of types) {
-                entry = Argument.tagged(entry);
+                entry = Argument.tagged.bind(this)(entry);
                 const res = await Argument.cast(entry, this.handler.resolver, message, phrase);
                 if (!Argument.isFailure(res)) return res;
             }
@@ -629,7 +632,7 @@ module.exports = Argument;
  * Applicable to text, content, rest, or separate match only.
  * @prop {DefaultValueSupplier|any} [default=null] - Default value if no input or did not cast correctly.
  * If using a flag match, setting the default value to a non-void value inverses the result.
- * @prop {StringResolvable|MessageOptions|MessageAdditions|OtherwiseContentSupplier} [otherwise] - Text sent if argument parsing fails.
+ * @prop {string|MessageOptions|MessageAdditions|OtherwiseContentSupplier} [otherwise] - Text sent if argument parsing fails.
  * This overrides the `default` option and all prompt options.
  * @prop {OtherwiseContentModifier} [modifyOtherwise] - Function to modify otherwise content.
  * @prop {ArgumentPromptOptions} [prompt] - Prompt options for when user does not provide input.
@@ -660,11 +663,11 @@ module.exports = Argument;
  * @prop {number} [limit=Infinity] - Amount of inputs allowed for an infinite prompt before finishing.
  * @prop {boolean} [breakout=true] - Whenever an input matches the format of a command, this option controls whether or not to cancel this command and run that command.
  * The command to be run may be the same command or some other command.
- * @prop {StringResolvable|MessageOptions|MessageAdditions|PromptContentSupplier} [start] - Text sent on start of prompt.
- * @prop {StringResolvable|MessageOptions|MessageAdditions|PromptContentSupplier} [retry] - Text sent on a retry (failure to cast type).
- * @prop {StringResolvable|MessageOptions|MessageAdditions|PromptContentSupplier} [timeout] - Text sent on collector time out.
- * @prop {StringResolvable|MessageOptions|MessageAdditions|PromptContentSupplier} [ended] - Text sent on amount of tries reaching the max.
- * @prop {StringResolvable|MessageOptions|MessageAdditions|PromptContentSupplier} [cancel] - Text sent on cancellation of command.
+ * @prop {string|MessageOptions|MessageAdditions|PromptContentSupplier} [start] - Text sent on start of prompt.
+ * @prop {string|MessageOptions|MessageAdditions|PromptContentSupplier} [retry] - Text sent on a retry (failure to cast type).
+ * @prop {string|MessageOptions|MessageAdditions|PromptContentSupplier} [timeout] - Text sent on collector time out.
+ * @prop {string|MessageOptions|MessageAdditions|PromptContentSupplier} [ended] - Text sent on amount of tries reaching the max.
+ * @prop {string|MessageOptions|MessageAdditions|PromptContentSupplier} [cancel] - Text sent on cancellation of command.
  * @prop {PromptContentModifier} [modifyStart] - Function to modify start prompts.
  * @prop {PromptContentModifier} [modifyRetry] - Function to modify retry prompts.
  * @prop {PromptContentModifier} [modifyTimeout] - Function to modify timeout messages.
@@ -776,7 +779,7 @@ module.exports = Argument;
  * Defaults for argument options.
  * @typedef {Object} DefaultArgumentOptions
  * @prop {ArgumentPromptOptions} [prompt] - Default prompt options.
- * @prop {StringResolvable|MessageOptions|MessageAdditions|OtherwiseContentSupplier} [otherwise] - Default text sent if argument parsing fails.
+ * @prop {string|MessageOptions|MessageAdditions|OtherwiseContentSupplier} [otherwise] - Default text sent if argument parsing fails.
  * @prop {OtherwiseContentModifier} [modifyOtherwise] - Function to modify otherwise content.
  */
 
@@ -803,7 +806,7 @@ module.exports = Argument;
  * @param {Message} message - Message that triggered the command.
  * @param {string|MessageEmbed|MessageAttachment|MessageAttachment[]|MessageOptions} text - Text to modify.
  * @param {FailureData} data - Miscellaneous data.
- * @returns {StringResolvable|MessageOptions|MessageAdditions|Promise<StringResolvable|MessageOptions|MessageAdditions>}
+ * @returns {string|MessageOptions|MessageAdditions|Promise<string|MessageOptions|MessageAdditions>}
  */
 
 /**
@@ -811,7 +814,7 @@ module.exports = Argument;
  * @typedef {Function} OtherwiseContentSupplier
  * @param {Message} message - Message that triggered the command.
  * @param {FailureData} data - Miscellaneous data.
- * @returns {StringResolvable|MessageOptions|MessageAdditions|Promise<StringResolvable|MessageOptions|MessageAdditions>}
+ * @returns {string|MessageOptions|MessageAdditions|Promise<string|MessageOptions|MessageAdditions>}
  */
 
 /**
@@ -820,7 +823,7 @@ module.exports = Argument;
  * @param {Message} message - Message that triggered the command.
  * @param {string|MessageEmbed|MessageAttachment|MessageAttachment[]|MessageOptions} text - Text from the prompt to modify.
  * @param {ArgumentPromptData} data - Miscellaneous data.
- * @returns {StringResolvable|MessageOptions|MessageAdditions|Promise<StringResolvable|MessageOptions|MessageAdditions>}
+ * @returns {string|MessageOptions|MessageAdditions|Promise<string|MessageOptions|MessageAdditions>}
  */
 
 /**
@@ -828,5 +831,5 @@ module.exports = Argument;
  * @typedef {Function} PromptContentSupplier
  * @param {Message} message - Message that triggered the command.
  * @param {ArgumentPromptData} data - Miscellaneous data.
- * @returns {StringResolvable|MessageOptions|MessageAdditions|Promise<StringResolvable|MessageOptions|MessageAdditions>}
+ * @returns {string|MessageOptions|MessageAdditions|Promise<string|MessageOptions|MessageAdditions>}
  */
