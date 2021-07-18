@@ -14,7 +14,7 @@ class ListenerHandler extends AkairoHandler {
     constructor(client, {
         directory,
         classToHandle = Listener,
-        extensions = ['.js', '.ts'],
+        extensions = ['.js'],
         automateCategories,
         loadFilter
     } = {}) {

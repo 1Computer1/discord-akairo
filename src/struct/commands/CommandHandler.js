@@ -18,7 +18,7 @@ class CommandHandler extends AkairoHandler {
     constructor(client, {
         directory,
         classToHandle = Command,
-        extensions = ['.js', '.ts'],
+        extensions = ['.js'],
         automateCategories,
         loadFilter,
         blockClient = true,

@@ -13,7 +13,7 @@ class InhibitorHandler extends AkairoHandler {
     constructor(client, {
         directory,
         classToHandle = Inhibitor,
-        extensions = ['.js', '.ts'],
+        extensions = ['.js'],
         automateCategories,
         loadFilter
     } = {}) {
