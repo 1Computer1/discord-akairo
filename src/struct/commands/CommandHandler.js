@@ -155,7 +155,7 @@ class CommandHandler extends AkairoHandler {
 
         /**
          * ID of user(s) to ignore `userPermissions` checks or a function to ignore.
-         * @type {Snowflake|Snowflake[]|IgnoreCheckPredicate}
+         * @type {Snowflake|Snowflake[]|IgnoreCheckPredicateWithPromise}
          */
         this.ignorePermissions = typeof ignorePermissions === 'function' ? ignorePermissions.bind(this) : ignorePermissions;
 
@@ -671,7 +671,7 @@ class CommandHandler extends AkairoHandler {
             const isIgnored = Array.isArray(ignorer)
                 ? ignorer.includes(message.author.id)
                 : typeof ignorer === 'function'
-                    ? ignorer(message, command)
+                    ? await ignorer(message, command)
                     : message.author.id === ignorer;
 
             if (!isIgnored) {
@@ -1149,7 +1149,7 @@ module.exports = CommandHandler;
  * @prop {number} [defaultCooldown=0] - The default cooldown for commands.
  * @prop {Snowflake|Snowflake[]|IgnoreCheckPredicate} [ignoreCooldown] - ID of user(s) to ignore cooldown or a function to ignore.
  * Defaults to the client owner(s).
- * @prop {Snowflake|Snowflake[]|IgnoreCheckPredicate} [ignorePermissions=[]] - ID of user(s) to ignore `userPermissions` checks or a function to ignore.
+ * @prop {Snowflake|Snowflake[]|IgnoreCheckPredicateWithPromise} [ignorePermissions=[]] - ID of user(s) to ignore `userPermissions` checks or a function to ignore.
  * @prop {DefaultArgumentOptions} [argumentDefaults] - The default argument options.
  */
 
@@ -1173,6 +1173,16 @@ module.exports = CommandHandler;
 
 /**
  * A function that returns whether this message should be ignored for a certain check.
+ * <info>This also supports promise returns unlike {@link IgnoreCheckPredicate}</info>
+ * @typedef {Function} IgnoreCheckPredicateWithPromise
+ * @param {Message} message - Message to check.
+ * @param {Command} command - Command to check.
+ * @returns {boolean|Promise<boolean>}
+ */
+
+/**
+ * A function that returns whether this message should be ignored for a certain check.
+ * <warn>This **does not** support promise returns unlike {@link IgnoreCheckPredicateWithPromise}</warn>
  * @typedef {Function} IgnoreCheckPredicate
  * @param {Message} message - Message to check.
  * @param {Command} command - Command to check.

@@ -168,7 +168,7 @@ declare module 'discord-akairo' {
         public lock?: KeySupplier;
         public locker?: Set<string>;
         public ignoreCooldown?: Snowflake | Snowflake[] | IgnoreCheckPredicate;
-        public ignorePermissions?: Snowflake | Snowflake[] | IgnoreCheckPredicate;
+        public ignorePermissions?: Snowflake | Snowflake[] | IgnoreCheckPredicateWithPromise;
         public ownerOnly: boolean;
         public prefix?: string | string[] | PrefixSupplier;
         public ratelimit: number;
@@ -206,7 +206,7 @@ declare module 'discord-akairo' {
         public fetchMembers: boolean;
         public handleEdits: boolean;
         public ignoreCooldown: Snowflake | Snowflake[] | IgnoreCheckPredicate;
-        public ignorePermissions: Snowflake | Snowflake[] | IgnoreCheckPredicate;
+        public ignorePermissions: Snowflake | Snowflake[] | IgnoreCheckPredicateWithPromise;
         public inhibitorHandler?: InhibitorHandler;
         public modules: Collection<string, Command>;
         public prefix: string | string[] | PrefixSupplier;
@@ -542,7 +542,7 @@ declare module 'discord-akairo' {
         editable?: boolean;
         flags?: string[];
         ignoreCooldown?: Snowflake | Snowflake[] | IgnoreCheckPredicate;
-        ignorePermissions?: Snowflake | Snowflake[] | IgnoreCheckPredicate;
+        ignorePermissions?: Snowflake | Snowflake[] | IgnoreCheckPredicateWithPromise;
         lock?: KeySupplier | 'guild' | 'channel' | 'user';
         optionFlags?: string[];
         ownerOnly?: boolean;
@@ -568,7 +568,7 @@ declare module 'discord-akairo' {
         fetchMembers?: boolean;
         handleEdits?: boolean;
         ignoreCooldown?: Snowflake | Snowflake[] | IgnoreCheckPredicate;
-        ignorePermissions?: Snowflake | Snowflake[] | IgnoreCheckPredicate;
+        ignorePermissions?: Snowflake | Snowflake[] | IgnoreCheckPredicateWithPromise;
         prefix?: string | string[] | PrefixSupplier;
         storeMessages?: boolean;
     }
@@ -657,6 +657,8 @@ declare module 'discord-akairo' {
     export type ExecutionPredicate = (message: Message) => boolean;
 
     export type IgnoreCheckPredicate = (message: Message, command: Command) => boolean;
+
+    export type IgnoreCheckPredicateWithPromise = (message: Message, command: Command) => boolean | Promise<boolean>;
 
     export type KeySupplier = (message: Message, args: any) => string;
 

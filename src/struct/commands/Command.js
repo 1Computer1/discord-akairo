@@ -180,7 +180,7 @@ class Command extends AkairoModule {
 
         /**
          * ID of user(s) to ignore `userPermissions` checks or a function to ignore.
-         * @type {?Snowflake|Snowflake[]|IgnoreCheckPredicate}
+         * @type {?Snowflake|Snowflake[]|IgnoreCheckPredicateWithPromise}
          */
         this.ignorePermissions = typeof ignorePermissions === 'function' ? ignorePermissions.bind(this) : ignorePermissions;
 
@@ -261,7 +261,7 @@ module.exports = Command;
  * @prop {BeforeAction} [before] - Function to run before argument parsing and execution.
  * @prop {KeySupplier|string} [lock] - The key type or key generator for the locker. If lock is a string, it's expected one of 'guild', 'channel', or 'user'.
  * @prop {Snowflake|Snowflake[]|IgnoreCheckPredicate} [ignoreCooldown] - ID of user(s) to ignore cooldown or a function to ignore.
- * @prop {Snowflake|Snowflake[]|IgnoreCheckPredicate} [ignorePermissions] - ID of user(s) to ignore `userPermissions` checks or a function to ignore.
+ * @prop {Snowflake|Snowflake[]|IgnoreCheckPredicateWithPromise} [ignorePermissions] - ID of user(s) to ignore `userPermissions` checks or a function to ignore.
  * @prop {DefaultArgumentOptions} [argumentDefaults] - The default argument options.
  * @prop {string} [description=''] - Description of the command.
  */
