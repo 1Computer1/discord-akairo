@@ -1,5 +1,6 @@
 const AkairoError = require('../../util/AkairoError');
 const AkairoHandler = require('../AkairoHandler');
+const { AkairoHandlerEvents } = require('../../util/Constants');
 const { Collection } = require('discord.js');
 const { isEventEmitter } = require('../../util/Util');
 const Listener = require('./Listener');
@@ -59,7 +60,7 @@ class ListenerHandler extends AkairoHandler {
      */
     register(listener, filepath) {
         super.register(listener, filepath);
-        listener.exec = listener.exec.bind(listener);
+        listener.exec = this.modifyExec(listener);
         this.addToEmitter(listener.id);
         return listener;
     }
@@ -108,6 +109,7 @@ class ListenerHandler extends AkairoHandler {
         if (!isEventEmitter(emitter)) throw new AkairoError('INVALID_TYPE', 'emitter', 'EventEmitter', true);
 
         emitter.removeListener(listener.event, listener.exec);
+        listener.exec = listener.exec._raw;
         return listener;
     }
 
@@ -124,6 +126,41 @@ class ListenerHandler extends AkairoHandler {
         }
 
         return this;
+    }
+
+    /**
+     * Handles errors from the handling.
+     * @param {Error} err The error.
+     * @param {Listener} listener Listener that errored.
+     * @param {any[]} args Arguments the listener was called with.
+     * @returns {void}
+     */
+    emitError(err, listener, args) {
+        if (this.listenerCount(AkairoHandlerEvents.ERROR)) {
+            this.emit(AkairoHandlerEvents.ERROR, err, listener, args);
+            return;
+        }
+
+        throw err;
+    }
+
+    /**
+     * Modifies a listener's exec function to emit an error on fail.
+     * @param {Listener} listener The listener.
+     * @returns {Function}
+     * @private
+     */
+    modifyExec(listener) {
+        const originalExec = listener.exec.bind(listener);
+        const exec = async function exec(...args) {
+            try {
+                await originalExec(...args);
+            } catch (err) {
+                this.handler.emitError(err, this, args);
+            }
+        }.bind(listener);
+        Object.defineProperty(exec, '_raw', { value: originalExec });
+        return exec;
     }
 
     /**
@@ -188,4 +225,12 @@ module.exports = ListenerHandler;
  * Emitted when a listener is removed.
  * @event ListenerHandler#remove
  * @param {Listener} listener - Listener removed.
+ */
+
+/**
+ * Emitted when a listener errors
+ * @event ListenerHandler#error
+ * @param {Error} error The error.
+ * @param {Listener} listener Listener executed.
+ * @param {any[]} args Arguments the listener was called with.
  */
