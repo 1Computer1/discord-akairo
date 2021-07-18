@@ -61,7 +61,9 @@ module.exports = {
     },
     AkairoHandlerEvents: {
         LOAD: 'load',
-        REMOVE: 'remove'
+        REMOVE: 'remove',
+        INIT: 'init',
+        ALL_INITIATED: 'initiated'
     },
     CommandHandlerEvents: {
         MESSAGE_BLOCKED: 'messageBlocked',

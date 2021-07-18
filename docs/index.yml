@@ -64,6 +64,8 @@
   files:
     - name: Updating to v8
       path: updating.md
+    - name: Accessing the Client
+      path: access_client.md
     - name: Handling Modules
       path: handling.md
     - name: Custom Handlers

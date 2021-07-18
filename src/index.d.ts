@@ -45,6 +45,7 @@ declare module 'discord-akairo' {
 
         public deregister(mod: AkairoModule): void;
         public findCategory(name: string): Category<string, AkairoModule>;
+        public init(): Promise<void>;
         public load(thing: string | Function, isReload?: boolean): AkairoModule;
         public loadAll(directory?: string, filter?: LoadPredicate): this;
         public register(mod: AkairoModule, filepath?: string): void;
@@ -54,6 +55,8 @@ declare module 'discord-akairo' {
         public removeAll(): this;
         public on(event: 'remove', listener: (mod: AkairoModule) => any): this;
         public on(event: 'load', listener: (mod: AkairoModule, isReload: boolean) => any): this;
+        public on(event: 'init', listener: (mod: AkairoModule) => any): this;
+        public on(event: 'initiated', listener: () => any): this;
 
         public static readdirRecursive(directory: string): string[];
     }
@@ -68,6 +71,7 @@ declare module 'discord-akairo' {
         public handler: AkairoHandler;
         public id: string;
 
+        public init(): any;
         public reload(): this;
         public remove(): this;
     }
@@ -249,6 +253,8 @@ declare module 'discord-akairo' {
         public useListenerHandler(ListenerHandler: ListenerHandler): this;
         public on(event: 'remove', listener: (command: Command) => any): this;
         public on(event: 'load', listener: (command: Command, isReload: boolean) => any): this;
+        public on(event: 'init', listener: (command: Command) => any): this;
+        public on(event: 'initiated', listener: () => any): this;
         public on(event: 'commandBlocked', listener: (message: Message, command: Command, reason: string) => any): this;
         public on(event: 'commandBreakout', listener: (message: Message, command: Command, breakMessage: Message) => any): this;
         public on(event: 'commandCancelled', listener: (message: Message, command: Command, retryMessage?: Message) => any): this;
@@ -336,6 +342,8 @@ declare module 'discord-akairo' {
         public test(type: 'all' | 'pre' | 'post', message: Message, command?: Command): Promise<string | void>;
         public on(event: 'remove', listener: (inhibitor: Inhibitor) => any): this;
         public on(event: 'load', listener: (inhibitor: Inhibitor, isReload: boolean) => any): this;
+        public on(event: 'init', listener: (inhibitor: Inhibitor) => any): this;
+        public on(event: 'initiated', listener: () => any): this;
     }
 
     export class Listener extends AkairoModule {
@@ -379,6 +387,8 @@ declare module 'discord-akairo' {
         public setEmitters(emitters: { [x: string]: EventEmitter }): void;
         public on(event: 'remove', listener: (listener: Listener) => any): this;
         public on(event: 'load', listener: (listener: Listener, isReload: boolean) => any): this;
+        public on(event: 'init', listener: (listener: Listener) => any): this;
+        public on(event: 'initiated', listener: () => any): this;
     }
 
     export abstract class Provider {
@@ -747,6 +757,8 @@ declare module 'discord-akairo' {
         AkairoHandlerEvents: {
             LOAD: 'load';
             REMOVE: 'remove';
+            INIT: 'init';
+            ALL_INITIATED: 'initiated';
         };
         CommandHandlerEvents: {
             MESSAGE_BLOCKED: 'messageBlocked';
