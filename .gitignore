@@ -3,5 +3,5 @@ node_modules
 .git
 .vscode
 
-test/auth.json
+test/config.json
 test/db.sqlite

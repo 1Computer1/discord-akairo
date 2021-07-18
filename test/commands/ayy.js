@@ -8,7 +8,7 @@ class AyyCommand extends Command {
     }
 
     exec(message) {
-        return message.reply('lmao');
+        return message.util.reply('lmao');
     }
 }
 

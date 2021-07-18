@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-const { Listener } = require('../..');
+const { Listener } = require('../../');
 
 class InvalidMessageListener extends Listener {
     constructor() {
@@ -12,7 +12,7 @@ class InvalidMessageListener extends Listener {
     }
 
     exec(msg) {
-        console.log(msg.util.parsed);
+        console.log('messageInvalid: msg.util.parsed:', msg.util.parsed);
     }
 }
 

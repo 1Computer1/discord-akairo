@@ -28,8 +28,9 @@
         "typescript": "^3.4.2"
     },
     "scripts": {
-        "test": "npm run lint",
-        "lint": "eslint ./src && tslint ./src/index.d.ts"
+        "test": "node test/bot.js",
+        "test:nodb": "node test/bot.js --no-db",
+        "lint": "eslint ./test ./src && tslint ./src/index.d.ts"
     },
     "repository": {
         "type": "git",

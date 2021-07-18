@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 
 const { Command } = require('../..');
-const util = require('util');
 
 class PCommand extends Command {
     constructor() {
@@ -25,11 +24,11 @@ class PCommand extends Command {
     }
 
     before() {
-        console.log(1);
+        console.log('p command: before');
     }
 
-    exec(message, args) {
-        message.channel.send(util.inspect(args, { depth: 1 }), { code: 'js' });
+    exec(message, { integer }) {
+        return message.util.send(`integer -> ${integer}`);
     }
 }
 

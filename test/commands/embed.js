@@ -23,16 +23,16 @@ class EmbedCommand extends Command {
         });
     }
 
-    exec(message, args) {
-        if (args.emptyContent) {
-            return message.util.send(null, { embed: { description: args.phrase } });
+    exec(message, { emptyContent, emptyEmbed, phrase }) {
+        if (emptyContent) {
+            return message.util.send({ embed: { description: phrase } });
         }
 
-        if (args.emptyEmbed) {
-            return message.util.send(args.phrase, { embed: null });
+        if (emptyEmbed) {
+            return message.util.send(phrase);
         }
 
-        return message.util.send(args.phrase, { embed: { description: args.phrase } });
+        return message.util.send(phrase, { embed: { description: phrase } });
     }
 }
 

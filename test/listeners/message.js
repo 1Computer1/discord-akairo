@@ -12,7 +12,7 @@ class MessageListener extends Listener {
     }
 
     exec(msg) {
-        console.log(msg.content);
+        console.log('message:', msg.content);
     }
 }
 

@@ -1,7 +1,5 @@
-/* eslint-disable no-console */
-
 const { Command } = require('../..');
-const util = require('util');
+const { inspect } = require('util');
 
 class ArgsCommand extends Command {
     constructor() {
@@ -48,7 +46,7 @@ class ArgsCommand extends Command {
     }
 
     exec(message, args) {
-        message.channel.send(util.inspect(args, { depth: 1 }), { code: 'js' });
+        return message.util.send(inspect(args, { depth: 1 }), { code: 'js' });
     }
 }
 

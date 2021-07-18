@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 const { Command, Flag } = require('../..');
-const util = require('util');
+const { inspect } = require('util');
 
 class FCommand extends Command {
     constructor() {
@@ -18,7 +18,7 @@ class FCommand extends Command {
                         return phrase;
                     },
                     default: (msg, value) => {
-                        console.log('failed', value);
+                        console.log('f command: failed', value);
                         return 1;
                     }
                 }
@@ -27,7 +27,7 @@ class FCommand extends Command {
     }
 
     exec(message, args) {
-        message.channel.send(util.inspect(args, { depth: 1 }), { code: 'js' });
+        return message.util.send(inspect(args, { depth: 1 }), { code: 'js' });
     }
 }
 

@@ -1,5 +1,5 @@
 const { Command } = require('../..');
-const util = require('util');
+const { inspect } = require('util');
 
 class EvalCommand extends Command {
     constructor() {
@@ -30,7 +30,7 @@ class EvalCommand extends Command {
 
         const print = (...a) => { // eslint-disable-line no-unused-vars
             const cleaned = a.map(obj => {
-                if (typeof o !== 'string') obj = util.inspect(obj, { depth: 1 });
+                if (typeof o !== 'string') obj = inspect(obj, { depth: 1 });
                 return obj.replace(tokenRegex, '[TOKEN]');
             });
 
@@ -57,7 +57,7 @@ class EvalCommand extends Command {
             let output = eval(code);
             if (output && typeof output.then === 'function') output = await output;
 
-            if (typeof output !== 'string') output = util.inspect(output, { depth: 0 });
+            if (typeof output !== 'string') output = inspect(output, { depth: 0 });
             output = `${logs.join('\n')}\n${logs.length && output === 'undefined' ? '' : output}`;
             output = output.replace(tokenRegex, '[TOKEN]');
 
@@ -78,7 +78,7 @@ class EvalCommand extends Command {
 
             return sent;
         } catch (err) {
-            console.error(err); // eslint-disable-line no-console
+            console.error('Eval command error:', err); // eslint-disable-line no-console
             let error = err;
 
             error = error.toString();

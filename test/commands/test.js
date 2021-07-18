@@ -1,7 +1,4 @@
-/* eslint-disable no-console */
-
 const { Argument: { compose, range, union }, Command } = require('../..');
-const util = require('util');
 
 class TestCommand extends Command {
     constructor() {
@@ -19,8 +16,8 @@ class TestCommand extends Command {
         });
     }
 
-    exec(message, args) {
-        message.channel.send(util.inspect(args, { depth: 1 }), { code: 'js' });
+    exec(message, { x }) {
+        return message.util.send(`x -> ${x}`);
     }
 }
 

@@ -1,7 +1,5 @@
-/* eslint-disable no-console */
-
 const { Command } = require('../../src');
-const util = require('util');
+const { inspect } = require('util');
 
 class SubCommand extends Command {
     constructor() {
@@ -15,7 +13,7 @@ class SubCommand extends Command {
     }
 
     exec(message, args) {
-        message.channel.send(util.inspect(args, { depth: 1 }), { code: 'js' });
+        return message.util.send(inspect(args, { depth: 1 }), { code: 'js' });
     }
 }
 

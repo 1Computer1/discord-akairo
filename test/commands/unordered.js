@@ -1,7 +1,5 @@
-/* eslint-disable no-console */
-
 const { Command } = require('../..');
-const util = require('util');
+const { inspect } = require('util');
 
 class UnorderedCommand extends Command {
     constructor() {
@@ -23,7 +21,7 @@ class UnorderedCommand extends Command {
     }
 
     exec(message, args) {
-        message.channel.send(util.inspect(args, { depth: 1 }), { code: 'js' });
+        return message.util.send(inspect(args, { depth: 1 }), { code: 'js' });
     }
 }
 

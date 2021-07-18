@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-
 const { Command } = require('../..');
 
 class QCommand extends Command {

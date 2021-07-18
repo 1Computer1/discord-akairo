@@ -1,7 +1,4 @@
-/* eslint-disable no-console */
-
 const { Command, Flag } = require('../..');
-const util = require('util');
 
 class GenerateCommand extends Command {
     constructor() {
@@ -23,8 +20,8 @@ class GenerateCommand extends Command {
         return { x };
     }
 
-    exec(message, args) {
-        message.channel.send(util.inspect(args, { depth: 1 }), { code: 'js' });
+    exec(message, { x }) {
+        return message.util.send(`X -> ${x}`);
     }
 }
 
