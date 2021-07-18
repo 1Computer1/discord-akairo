@@ -28,6 +28,7 @@ module.exports = {
     SequelizeProvider: require('./providers/SequelizeProvider'),
     SQLiteProvider: require('./providers/SQLiteProvider'),
     MongooseProvider: require('./providers/MongooseProvider'),
+    RedisProvider: require('./providers/RedisProvider'),
 
     // Utilities
     AkairoError: require('./util/AkairoError'),

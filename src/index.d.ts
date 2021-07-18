@@ -435,6 +435,18 @@ declare module 'discord-akairo' {
         public init(): Promise<void>;
         public set(id: string, key: string, value: any): Promise<any>;
     }
+    
+    export class RedisProvider extends Provider {
+        public constructor(keyPrefix: string, redisOptions?: object, cacheInMemory?: boolean);
+
+        public items: Collection<string, any>;
+
+        public clear(id: string): Promise<any>;
+        public delete(id: string, key: string): Promise<any>;
+        public get(id: string, key: string, defaultValue: any): Promise<any>;
+        public init(): Promise<void>;
+        public set(id: string, key: string, value: any): Promise<any>;
+    }
 
     export class TypeResolver {
         public constructor(handler: CommandHandler);
