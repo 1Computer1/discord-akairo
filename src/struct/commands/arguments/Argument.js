@@ -120,7 +120,7 @@ class Argument {
         const commandDefs = this.command.argumentDefaults;
         const handlerDefs = this.handler.argumentDefaults;
         const optional = choice(
-            this.prompt && this.prompt.optional,
+            this.default ? true : (this.prompt && this.prompt.optional),
             commandDefs.prompt && commandDefs.prompt.optional,
             handlerDefs.prompt && handlerDefs.prompt.optional
         );
